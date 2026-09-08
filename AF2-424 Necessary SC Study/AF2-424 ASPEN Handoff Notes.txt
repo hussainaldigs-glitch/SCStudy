@@ -17,42 +17,45 @@ I do not have ASPEN OneLiner in this environment, so I could not open/edit the .
 apply the change file, or run the short circuit simulation. Everything below needs to be
 done by someone with ASPEN OneLiner + PJM access, following your procedure manual.
 
-Open items from the assumptions doc (please resolve/confirm):
-  A-02  TO/Area number assumed PPL (229) from POI location (Reed/Reed Tap #1,
-        Northumberland Co, PA) -- I could not log into PJM Serial Service to confirm.
-        CONFIRM before loading the OSF file / running cases.
-  A-03  GSU low-side winding grounding: QP just says "Wye" (no grounding stated).
-        Assumed Ungrounded Wye. Confirm against GSU datasheet if available.
-  A-04  MPT zero-sequence: QP table shows X0=0.06604 pu, but a QP deficiency comment
-        says the FAT report value (Z0=0.0692) should be used instead. FAT report was
-        not provided, so the QP table value was used. Get the FAT report and update
-        the MPT zero-sequence R/X in the spreadsheet (rows B60/C60, "2 winding MPT"
-        section) and regenerate the change file if it differs.
-  A-05  POI is a LINE TAP between "Reed" (0.85 mi) and "Reed Tap #1" (7.01 mi), not a
-        direct substation connection. This needs the same handling as the tap-point
-        case in your training video (Harmonyville/Shackelford example):
-          1. Open the base case, search for an existing Reed <-> Reed Tap #1 69kV line.
-          2. If found, compare its total length to 0.85 + 7.01 = 7.86 mi. If it's close,
-             no change needed. If it differs meaningfully, scale the tap-segment
-             impedances proportionally to the QP distances (see procedure section 5.2 /
-             training ~1:46:00).
-          3. Insert the AF2-424_POI bus at the tap point on that line.
-          4. If AF2-424 (or AF2-425) already has buses present from a prior study,
-             expand and delete them the way AC2-066 was handled in training, then
-             apply the change file.
-  A-06  QP comments state AF2-424 and AF2-425 share this POI and are jointly studied
-        to 40 MW AC combined, but no AF2-425 package was provided. This study only
-        covers AF2-424 -- confirm whether AF2-425 needs its own/combined study.
+Confirmed by Hussain (2026-09-08): A-02 PPL/229 is correct. A-03 "Wye" with no
+grounding stated = Ungrounded Wye. A-04 use the QP table value, not the
+deficiency-comment/FAT value, for this round. A-06 this is a joint AF2-424/AF2-425
+project, single combined package, no separate AF2-425 study. Items 2 and 3 are now
+standing conventions for future projects -- see
+"SC Study Modeling Conventions - Notes.txt" in the repo root.
+
+*** REMAINING ACTION ITEM FOR YOU IN ASPEN -- DO NOT SKIP (A-05) ***
+POI is a LINE TAP between "Reed" (0.85 mi) and "Reed Tap #1" (7.01 mi), not a
+direct substation connection. You confirmed you'll do this step yourself in ASPEN.
+When you open the case:
+  1. Open the base case, search for an existing Reed <-> Reed Tap #1 69kV line.
+  2. If found, compare its total length to 0.85 + 7.01 = 7.86 mi. If it's close,
+     no change needed. If it differs meaningfully, scale the tap-segment
+     impedances proportionally to the QP distances (see procedure section 5.2 /
+     training ~1:46:00).
+  3. Insert the AF2-424_POI bus at the tap point on that line.
+  4. If AF2-424 (or AF2-425) already has buses present from a prior study,
+     expand and delete them the way AC2-066 was handled in training, then
+     apply the change file.
+  5. Since this is a joint AF2-424/AF2-425 project (see A-06), also check
+     whether the existing POI position in the base case is already registered
+     under "AF2-425" instead of "AF2-424" (this happened in the AF1-285/AE2-306
+     joint-project precedent, where the POI bus ended up named 'AE2-306_POI'
+     even though every other new bus was prefixed 'AF1-285'). If so, rename
+     the POI bus in AF2-424_Necessary.chf from 'AF2-424_POI' to 'AF2-425_POI'
+     (2 occurrences, in the final [ADD TRANSMISSION LINE] block) before
+     applying the change file.
 
 Change file note: AF2-424_Necessary.chf only contains the standard project elements
 (bus data, inverter/generator, GSU, collector equivalent, MPT, attachment line from
 AF2-424_POI to AF2-424_mn). It does NOT include an extra POI-to-substation zero-impedance
-tie line. Add one only if, after investigating A-05, the base case does not already
-place AF2-424_POI directly on the Reed-Reed Tap #1 line (same pattern used for AC2-066's
-Hillcrest POI in the training video).
+tie line. Add one only if the base case does not already place AF2-424_POI (or
+AF2-425_POI, see step 5 above) directly on the Reed-Reed Tap #1 line (same pattern
+used for AC2-066's Hillcrest POI in the training video).
 
 Remaining procedure steps (per "PJM Short Circuit Study Procedure.docx" section 5-9):
-  1. Resolve A-02 and A-05 above before touching ASPEN.
+  1. Handle the A-05 tap-point/POI-naming action item above before touching the
+     change file (Area/OSF are already confirmed as PPL/229).
   2. Open AF2-424_Necessary_Without.OLR in ASPEN OneLiner.
   3. Hide (not delete) unrelated buses; locate/prepare the Reed / Reed Tap #1 / AF2-424
      region per A-05.

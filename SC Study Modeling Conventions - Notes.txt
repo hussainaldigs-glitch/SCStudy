@@ -1,0 +1,36 @@
+SC Study Modeling Conventions - Notes
+======================================
+Standing conventions to apply on future short circuit studies, confirmed by
+Hussain during the AF2-424 (Shamrock Solar) study. Check here before treating
+similar situations as open assumptions.
+
+1. Winding grounding when QP just says "Wye"
+   If a QP data field for a transformer winding connection just says "Wye"
+   with no grounding qualifier, treat it as Ungrounded Wye. Only use
+   Grounded Wye when the QP data (or another source) says so explicitly.
+
+2. QP table value vs. a deficiency-comment-referenced report
+   If a QP field has a numeric value in the data table, but a PJM
+   deficiency-review comment on that same QP says a different value from
+   an external report (e.g. a FAT report) should be used, and that report
+   was NOT actually provided with the study package: use the QP table
+   value for the study. Do not substitute the report's value unless the
+   report itself is supplied and reviewed. Note the discrepancy in the
+   assumptions doc either way.
+
+3. Joint / shared-POI projects (e.g. AF2-424 & AF2-425, or AF1-285 & AE2-306)
+   Some projects share one physical facility and POI across two PJM queue
+   numbers. In that case:
+   - Only one QP package is needed/provided (for whichever queue is the
+     data source); the QP data already describes the combined facility.
+   - All new equipment buses (inverters, GSU, collector, MPT, etc.) are
+     named using the QP-source queue number as the prefix.
+   - The POI bus itself may need to be named after the OTHER (sibling)
+     queue number instead, if that is the queue whose POI position
+     already exists in the base ASPEN case (see the AF1-285_AE2-306
+     precedent, where the attachment line landed on 'AE2-306_POI' even
+     though all other buses were prefixed 'AF1-285'). Check the base case
+     in ASPEN for which queue's POI already exists before naming/wiring
+     the POI bus in the change file.
+   - No separate short circuit study package is needed for the sibling
+     queue number.
