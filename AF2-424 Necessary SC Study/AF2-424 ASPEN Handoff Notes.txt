@@ -1,0 +1,70 @@
+AF2-424 (Shamrock Solar) - Necessary Short Circuit Study
+ASPEN OneLiner Handoff Notes
+==========================================================
+
+What I prepared (no ASPEN access, so this is as far as the paperwork side goes):
+  - AF2-424_Necessary_calculation.xlsx  -- filled from QP data using your template formulas
+  - AF2-424_Necessary.chf               -- change file generated from the spreadsheet's column K
+  - AF2-424 Short Circuit Study Assumptions Used.docx -- 6 flagged items, see below
+  - AF2-424_Necessary_Without.OLR       -- UNMODIFIED copy of the generic base case you
+                                            uploaded (the "XXXXXX_Necessary_AsBuilt_Without.OLR"
+                                            PJM base case). This is only the starting point --
+                                            it still needs the project-specific setup below
+                                            before it's a real "Without" case.
+  - PPL_2027.OSF                        -- copied from your TC1_2027 OSFs library (see A-02)
+
+I do not have ASPEN OneLiner in this environment, so I could not open/edit the .OLR files,
+apply the change file, or run the short circuit simulation. Everything below needs to be
+done by someone with ASPEN OneLiner + PJM access, following your procedure manual.
+
+Open items from the assumptions doc (please resolve/confirm):
+  A-02  TO/Area number assumed PPL (229) from POI location (Reed/Reed Tap #1,
+        Northumberland Co, PA) -- I could not log into PJM Serial Service to confirm.
+        CONFIRM before loading the OSF file / running cases.
+  A-03  GSU low-side winding grounding: QP just says "Wye" (no grounding stated).
+        Assumed Ungrounded Wye. Confirm against GSU datasheet if available.
+  A-04  MPT zero-sequence: QP table shows X0=0.06604 pu, but a QP deficiency comment
+        says the FAT report value (Z0=0.0692) should be used instead. FAT report was
+        not provided, so the QP table value was used. Get the FAT report and update
+        the MPT zero-sequence R/X in the spreadsheet (rows B60/C60, "2 winding MPT"
+        section) and regenerate the change file if it differs.
+  A-05  POI is a LINE TAP between "Reed" (0.85 mi) and "Reed Tap #1" (7.01 mi), not a
+        direct substation connection. This needs the same handling as the tap-point
+        case in your training video (Harmonyville/Shackelford example):
+          1. Open the base case, search for an existing Reed <-> Reed Tap #1 69kV line.
+          2. If found, compare its total length to 0.85 + 7.01 = 7.86 mi. If it's close,
+             no change needed. If it differs meaningfully, scale the tap-segment
+             impedances proportionally to the QP distances (see procedure section 5.2 /
+             training ~1:46:00).
+          3. Insert the AF2-424_POI bus at the tap point on that line.
+          4. If AF2-424 (or AF2-425) already has buses present from a prior study,
+             expand and delete them the way AC2-066 was handled in training, then
+             apply the change file.
+  A-06  QP comments state AF2-424 and AF2-425 share this POI and are jointly studied
+        to 40 MW AC combined, but no AF2-425 package was provided. This study only
+        covers AF2-424 -- confirm whether AF2-425 needs its own/combined study.
+
+Change file note: AF2-424_Necessary.chf only contains the standard project elements
+(bus data, inverter/generator, GSU, collector equivalent, MPT, attachment line from
+AF2-424_POI to AF2-424_mn). It does NOT include an extra POI-to-substation zero-impedance
+tie line. Add one only if, after investigating A-05, the base case does not already
+place AF2-424_POI directly on the Reed-Reed Tap #1 line (same pattern used for AC2-066's
+Hillcrest POI in the training video).
+
+Remaining procedure steps (per "PJM Short Circuit Study Procedure.docx" section 5-9):
+  1. Resolve A-02 and A-05 above before touching ASPEN.
+  2. Open AF2-424_Necessary_Without.OLR in ASPEN OneLiner.
+  3. Hide (not delete) unrelated buses; locate/prepare the Reed / Reed Tap #1 / AF2-424
+     region per A-05.
+  4. Save this as the real AF2-424_Necessary_Without.OLR, run Network > Set Generator
+     Reference Angle, then Check Short Circuit Ratings with Area = 229, OSF =
+     PPL_2027.OSF, CSV output on. Save as AF2-424_Necessary_Without.csv.
+  5. Copy to AF2-424_Necessary_With.OLR, apply AF2-424_Necessary.chf via
+     File > Case Builder (expect 0 errors / 0 warnings -- if not, re-check A-05 wiring
+     first). Expand/organize the new buses, set generator reference angle again, run
+     Check Short Circuit Ratings the same way, save as AF2-424_Necessary_With.csv.
+  6. Use the DWTH add-in (DWTH_v2.xlam, in the repo root) to compare the Without/With
+     CSVs and produce AF2-424_Necessary_With_Comparison.xls. Review the duty% column
+     for entries >100% with >1% duty delta.
+  7. Delete any *.BAK files, update the assumptions doc Status column as items are
+     resolved, and the package is complete.

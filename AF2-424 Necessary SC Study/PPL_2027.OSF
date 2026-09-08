@@ -1,0 +1,44 @@
+[ASPEN OneLiner IEEE Breaker Checking Options]
+wBkrFaults=5
+bUseANSIxr=1
+fKVcutoff=121
+fKVcutoffT=121
+bIgnore121kV=1
+bIgnore121kVt=1
+bIgnoreReclosing=0
+nScaleI=0
+bDoAC=1
+bUseFlatPU=0
+bNoEndOpenFault=0
+bShowAllFaults=0
+bIgnoreOOS=1
+b1LG115Total=0
+b1LG115Sym=0
+
+[ASPEN OneLiner Network Options]
+fSwitchR=0
+fSwitchX=1e-005
+bUseSmallB=0
+bIgnoreShift=1
+
+[ASPEN OneLiner Fault Options]
+fFlatBusV=1
+nPrefaultV=1
+nGenZType=0
+nIgnoreMOV=1
+nGenILimitOption=0
+bIgnoreShunt=1
+bIgnoreLoad=1
+bIgnoreLineGB=1
+bIgnoreXfmrLineShunt=1
+dMuThreshold=0
+
+[ASPEN OneLiner ANSI X/R Ratio Options]
+fSmallX=0.0001
+nSmallR=1
+fSmallR=0.0001
+fXR1=10
+fXR2=10
+fXR3=10
+fXR4=10
+bUseZ2=1
