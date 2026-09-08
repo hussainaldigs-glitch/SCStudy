@@ -1,0 +1,7 @@
+Copy the file ‘DWTH_v2_1.xlam’ short circuit results comparison add in
+Paste the file into your “My Documents” folder on your machine
+In MS Excel, go to File > Options > Add-ins
+At the bottom, where it says manage excel add-ins, click Go. See Figure 6 below.
+Click on the button Browse to the right. See Figure 7.
+Navigate to My Documents and open ‘DWTH_v2_1.xlam’
+Now select DWTH_v2_1 from the menu and click “OK”. See Figure 7.

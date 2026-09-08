@@ -1,0 +1,86 @@
+[ONELINER AND POWER FLOW CHANGE FILE]
+baseMVA=100
+delimiter='
+ver= 2015 'A'
+date= 'Tue Nov 11 11:04:10 2025'
+fileA= 'File A: C:\Users\eichtl\Downloads\LAE\SC Studies\Completed\AB2-077 As-Built\AB2-077_As-Built_Without.olr'
+fileB= 'File B: C:\Users\eichtl\Downloads\LAE\SC Studies\Completed\AB2-077 As-Built\AB2-077_As-Built_Without - Copy.olr'
+correlateBusesBy= 'Name,kV'
+checkExtent= 2 'N' '345'
+kvRange= '0-9999'
+includeTies= 0
+checkBuses= 1
+checkGenerators and voltage controlled current sources= 1
+checkLoads= 1
+checkShunts= 1
+checkLines= 1
+checkSvds= 1
+checkShifters= 1
+checkSwitches= 1
+checkDCLines= 1
+checkXfmrs= 1
+checkBreakers= 1
+checkMutuals= 1
+checkOCRelays= 1
+checkDSRelays= 1
+checkProtectionSchemes= 1
+checkDevices= 1
+
+[DELETE BUS DATA]
+'AB2-077_POI' 115= 0 345 1 'Dominion' 0 1 0 0 0 0 0  'ab2-077, 078 and 079 are modeled as ab2-079' /
+'' /
+''
+
+[ADD BUS DATA]
+'AB2-077_TAP' 115= 0 345 25 '' 1 1 0 0 0 0 0 
+
+[DELETE TRANSMISSION LINE DATA]
+'BLACK BRANCH' 115 'AB2-077_POI' 115 '1'= 1 0 'zero_imp' '' 0 'mi' /
+   1e-005 0.0001 0 0 0 0 1e-005 0.0001 0 0 0 0 4 0 0 0 0 0 0 0.9009
+
+[DELETE TRANSMISSION LINE DATA]
+'JONES STORE' 115 'BLACK BRANCH' 115 '1'= 1 0 'line 36' '' 7.35 'mi' /
+   0.00819 0.03926 0 0 0 0 0.03762 0.13598 0 0 0 0 4 0 0 0 0 0 0 0
+
+[ADD TRANSMISSION LINE DATA]
+'AB2-077_TAP' 115 'BLACK BRANCH' 115 '1'= 1 0 'line 36' '' 0.0199922 'mi' /
+   2.22771e-005 0.000106788 0 0 0 0 0.000102328 0.00036987 0 0 0 0 4 0 0 0 0 0 0 0
+
+[ADD TRANSMISSION LINE DATA]
+'JONES STORE' 115 'AB2-077_TAP' 115 '1'= 1 0 'line 36' '' 7.33001 'mi' /
+   0.00816772 0.0391532 0 0 0 0 0.0375177 0.13561 0 0 0 0 4 0 0 0 0 0 0 0
+
+[DELETE MUTUAL DATA]
+'JONES STORE' 115 'BLACK BRANCH' 115 '1' 'CHASE CITY' 115 'BARNES JCT T' 115 '1'= -0.0059 -0.0083 32.9 56.7 75.8 100 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0
+
+[DELETE MUTUAL DATA]
+'JONES STORE' 115 'BLACK BRANCH' 115 '1' 'AD1-088_tap' 230 'CLOVER' 230 '1'= -0.0032 -0.0047 76 100 26.9386 36.3514 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0
+
+[ADD MUTUAL DATA]
+'AB2-077_TAP' 115 'BLACK BRANCH' 115 '1' 'AD1-088_tap' 230 'CLOVER' 230 '1'= -3.62677e-005 -5.32681e-005 0 99.999 26.9386 27.0453 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0
+
+[ADD MUTUAL DATA]
+'JONES STORE' 115 'AB2-077_TAP' 115 '1' 'AD1-088_tap' 230 'CLOVER' 230 '1'= -0.00316373 -0.00464673 76.2073 100 27.0453 36.3514 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0
+
+[ADD MUTUAL DATA]
+'JONES STORE' 115 'AB2-077_TAP' 115 '1' 'CHASE CITY' 115 'BARNES JCT T' 115 '1'= -0.0059 -0.0083 32.9897 56.8546 75.8 100 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0 /
+0 0 0 0 0 0
