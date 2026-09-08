@@ -3,31 +3,37 @@ ASPEN OneLiner Handoff Notes
 ==========================================================
 
 What I prepared (no ASPEN access, so this is as far as the paperwork side goes):
-  - AF2-424_Necessary_calculation.xlsx  -- filled from QP data using your template formulas
-  - AF2-424_Necessary.chf               -- change file generated from the spreadsheet's column K
-  - AF2-424 Short Circuit Study Assumptions Used.docx -- 6 flagged items, see below
+  - AF2-424_Necessary_calculation.xlsx  -- filled from QP data using your template
+                                            formulas (bus names: _mn, _inv, _inx, _inxc;
+                                            no _ter row since the MPT is 2-winding; only
+                                            the sections actually used are present --
+                                            Inverter/Type4, 2W GSU, Collector Equivalent,
+                                            2W MPT, Attachment Line)
+  - AF2-424_Necessary.chf               -- change file generated from the spreadsheet's
+                                            column K
+  - AF2-424 Short Circuit Study Assumptions Used.docx -- no assumptions (see below)
   - AF2-424_Necessary_Without.OLR       -- UNMODIFIED copy of the generic base case you
                                             uploaded (the "XXXXXX_Necessary_AsBuilt_Without.OLR"
                                             PJM base case). This is only the starting point --
                                             it still needs the project-specific setup below
                                             before it's a real "Without" case.
-  - PPL_2027.OSF                        -- copied from your TC1_2027 OSFs library (see A-02)
+  - PPL_2027.OSF                        -- copied from your TC1_2027 OSFs library
 
 I do not have ASPEN OneLiner in this environment, so I could not open/edit the .OLR files,
 apply the change file, or run the short circuit simulation. Everything below needs to be
 done by someone with ASPEN OneLiner + PJM access, following your procedure manual.
 
-Confirmed by Hussain (2026-09-08): A-02 PPL/229 is correct. A-03 "Wye" with no
-grounding stated = Ungrounded Wye. A-04 use the QP table value, not the
-deficiency-comment/FAT value, for this round. A-06 this is a joint AF2-424/AF2-425
-project, single combined package, no separate AF2-425 study. Items 2 and 3 are now
-standing conventions for future projects -- see
-"SC Study Modeling Conventions - Notes.txt" in the repo root.
+TO/Area = PPL / 229, GSU low-side winding = Ungrounded Wye, and MPT zero-sequence
+impedance = the QP table value (not the deficiency-comment/FAT value) are all confirmed
+and already baked into the spreadsheet and change file. This is a joint AF2-424/AF2-425
+project (single combined package, no separate AF2-425 study) -- see
+"SC Study Modeling Conventions - Notes.txt" in the repo root for the standing
+conventions this confirmed for future projects.
 
-*** REMAINING ACTION ITEM FOR YOU IN ASPEN -- DO NOT SKIP (A-05) ***
+*** REMAINING ACTION ITEM FOR YOU IN ASPEN -- DO NOT SKIP ***
 POI is a LINE TAP between "Reed" (0.85 mi) and "Reed Tap #1" (7.01 mi), not a
-direct substation connection. You confirmed you'll do this step yourself in ASPEN.
-When you open the case:
+direct substation connection. You're doing this step yourself in ASPEN. When you
+open the case:
   1. Open the base case, search for an existing Reed <-> Reed Tap #1 69kV line.
   2. If found, compare its total length to 0.85 + 7.01 = 7.86 mi. If it's close,
      no change needed. If it differs meaningfully, scale the tap-segment
@@ -37,9 +43,9 @@ When you open the case:
   4. If AF2-424 (or AF2-425) already has buses present from a prior study,
      expand and delete them the way AC2-066 was handled in training, then
      apply the change file.
-  5. Since this is a joint AF2-424/AF2-425 project (see A-06), also check
-     whether the existing POI position in the base case is already registered
-     under "AF2-425" instead of "AF2-424" (this happened in the AF1-285/AE2-306
+  5. Since this is a joint AF2-424/AF2-425 project, also check whether the
+     existing POI position in the base case is already registered under
+     "AF2-425" instead of "AF2-424" (this happened in the AF1-285/AE2-306
      joint-project precedent, where the POI bus ended up named 'AE2-306_POI'
      even though every other new bus was prefixed 'AF1-285'). If so, rename
      the POI bus in AF2-424_Necessary.chf from 'AF2-424_POI' to 'AF2-425_POI'
@@ -54,20 +60,20 @@ AF2-425_POI, see step 5 above) directly on the Reed-Reed Tap #1 line (same patte
 used for AC2-066's Hillcrest POI in the training video).
 
 Remaining procedure steps (per "PJM Short Circuit Study Procedure.docx" section 5-9):
-  1. Handle the A-05 tap-point/POI-naming action item above before touching the
+  1. Handle the tap-point/POI-naming action item above before touching the
      change file (Area/OSF are already confirmed as PPL/229).
   2. Open AF2-424_Necessary_Without.OLR in ASPEN OneLiner.
   3. Hide (not delete) unrelated buses; locate/prepare the Reed / Reed Tap #1 / AF2-424
-     region per A-05.
+     region per the action item above.
   4. Save this as the real AF2-424_Necessary_Without.OLR, run Network > Set Generator
      Reference Angle, then Check Short Circuit Ratings with Area = 229, OSF =
      PPL_2027.OSF, CSV output on. Save as AF2-424_Necessary_Without.csv.
   5. Copy to AF2-424_Necessary_With.OLR, apply AF2-424_Necessary.chf via
-     File > Case Builder (expect 0 errors / 0 warnings -- if not, re-check A-05 wiring
-     first). Expand/organize the new buses, set generator reference angle again, run
-     Check Short Circuit Ratings the same way, save as AF2-424_Necessary_With.csv.
+     File > Case Builder (expect 0 errors / 0 warnings -- if not, re-check the
+     tap/POI wiring first). Expand/organize the new buses, set generator reference
+     angle again, run Check Short Circuit Ratings the same way, save as
+     AF2-424_Necessary_With.csv.
   6. Use the DWTH add-in (DWTH_v2.xlam, in the repo root) to compare the Without/With
      CSVs and produce AF2-424_Necessary_With_Comparison.xls. Review the duty% column
      for entries >100% with >1% duty delta.
-  7. Delete any *.BAK files, update the assumptions doc Status column as items are
-     resolved, and the package is complete.
+  7. Delete any *.BAK files, and the package is complete.
