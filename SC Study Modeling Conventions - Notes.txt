@@ -23,14 +23,31 @@ similar situations as open assumptions.
    numbers. In that case:
    - Only one QP package is needed/provided (for whichever queue is the
      data source); the QP data already describes the combined facility.
-   - All new equipment buses (inverters, GSU, collector, MPT, etc.) are
-     named using the QP-source queue number as the prefix.
-   - The POI bus itself may need to be named after the OTHER (sibling)
-     queue number instead, if that is the queue whose POI position
-     already exists in the base ASPEN case (see the AF1-285_AE2-306
-     precedent, where the attachment line landed on 'AE2-306_POI' even
-     though all other buses were prefixed 'AF1-285'). Check the base case
-     in ASPEN for which queue's POI already exists before naming/wiring
-     the POI bus in the change file.
+   - The POI and the facility can sit under DIFFERENT queue numbers, and
+     which queue gets which is not fixed. Match how PJM's base case (and
+     the stability model) already names them, and confirm with Anteneh:
+       AF1-285 & AE2-306: facility under AF1-285 (the QP queue), POI is
+                          'AE2-306_POI'.
+       AF2-424 & AF2-425: POI is 'AF2-424_POI' (the QP queue), facility
+                          under AF2-425 (Anteneh's call).
+     In the calc sheet, type the facility queue into Project Name (B2) and
+     the POI name into POI Bus Name (D2) instead of using their formulas.
+   - If the QP / stability model doesn't say how the inverters split
+     between the two queues, model the plant as one aggregated unit
+     (Anteneh's call on AF2-424/AF2-425).
+   - If the base case already has an older model of the facility (e.g.
+     PJM's old AF2-425 plant in the AF2-424 case), delete all of it from
+     the Without case before applying the change file. Otherwise its
+     buses collide with the new ones ("Cannot make this change") and it
+     skews the Without results.
    - No separate short circuit study package is needed for the sibling
      queue number.
+
+4. Check the POI tap location against the QP
+   If the QP says the POI taps a line at given distances, check that the
+   base case really has the POI on that line at those distances. In
+   AF2-424, PJM's case had the POI connected straight to REED TP1 instead
+   of 7.01 mi / 0.85 mi along the line. Anteneh said to keep the
+   stability/PSSE model as is but fix it for short circuit: split the line
+   at the POI and scale each segment's R, X, R0, X0 and G/B by its length
+   (see AF2-424_Necessary_POI-Update.chf for an example).
