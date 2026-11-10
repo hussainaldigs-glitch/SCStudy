@@ -15,7 +15,8 @@ stability/PSSE model as is, but for short circuit:
 The previous With/Without CSVs and the comparison .xls are superseded. Both
 the POI location and PJM's old AF2-425 plant model affected them. The first
 With case had the new plant AND PJM's old AF2-425 plant in it at the same
-time. Rebuild both cases starting from PJM's original Without case.
+time. Rebuild both cases starting from the Without case you used for the
+first run, or from PJM's generic base case (see Step 1.1).
 
 
 FILES FOR THE RERUN (all in this folder)
@@ -41,6 +42,14 @@ WHAT IS IN PJM'S BASE CASE TODAY
   AF2-424_POI:              tied straight to REED TP1 by a zero-impedance
                             line named 'ZBR' (ckt 1, X = 0.00001). This is
                             the mistake.
+  Old AF2-424 plant:        ONLY in PJM's generic base case
+                            (XXXXXX_Necessary_AsBuilt_Without.OLR). Your
+                            first-run Without already has it removed. It
+                            hangs off AF2-424_POI through a 0.01 mi lead
+                            line: AF2-424_mn, AF2-424_inxc, AF2-424_ter
+                            (3-winding MPT), AF2-424_inx and AF2-424_inv
+                            (0.645 kV), plus their transformers, generator
+                            and the col eqv line.
   AF2-425_POI:              a tap on a DIFFERENT line, NEW_Sunbury- ckt 2
                             between FAIR TP2 (212186) and REED TP2 (212218):
                               FAIR TP2 - 0.95 mi - AF2-425_POI - 0.114 mi
@@ -72,9 +81,22 @@ circuit ID are kept.
 
 STEP 1 - WITHOUT CASE
 ---------------------
-  1. Open PJM's original AF2-424_Necessary_Without.OLR. Keep a copy of the
-     original in case you need to start over.
-  2. Delete the old AF2-425 plant from AF2-425_mn back, with "Delete all
+  1. Open the Without case and keep a copy of it in case you need to
+     start over. Use either:
+       - the AF2-424_Necessary_Without.OLR you used for the first run.
+         You already removed the old AF2-424 plant from it, so skip
+         step 2.
+       - PJM's generic base case, XXXXXX_Necessary_AsBuilt_Without.OLR
+         (the AF2-424_Necessary_Without.OLR copy in the repo is this
+         same file).
+  2. Generic base case only: delete the old AF2-424 plant from AF2-424_mn
+     back, the same way you did for the first run:
+       AF2-424_mn, AF2-424_ter, AF2-424_inxc, AF2-424_inx and
+       AF2-424_inv, plus their transformers, generator, the col eqv line
+       and the 0.01 mi lead line to AF2-424_POI.
+     Keep the AF2-424_POI bus. Then search the buses for "AF2-424". Only
+     AF2-424_POI should come up.
+  3. Delete the old AF2-425 plant from AF2-425_mn back, with "Delete all
      inside region" (answer No to hidden buses and No to annotations):
        AF2-425_mn (961341), AF2-425_inxc, AF2-425_ter, AF2-425_inx and
        AF2-425_inv, plus their transformers, generator, the col eqv line
@@ -89,23 +111,23 @@ STEP 1 - WITHOUT CASE
      old AF2-425_inv is 0.645 kV (the new one is 0.63 kV), so a leftover
      there won't error. It would quietly leave a second plant in the
      case, so make sure AF2-425_POI is the only hit. ***
-  3. Delete the 'ZBR' line (ckt 1) between REED TP1 and AF2-424_POI.
+  4. Delete the 'ZBR' line (ckt 1) between REED TP1 and AF2-424_POI.
      Keep the AF2-424_POI bus itself. It should now have nothing
      attached. Don't skip this: the POI update adds a ckt 1 line on that
      same REED TP1 - AF2-424_POI pair, so that add fails if the ZBR is
      still there.
-  4. File > Case Builder: apply AF2-424_Necessary_POI-Update.chf, then save
+  5. File > Case Builder: apply AF2-424_Necessary_POI-Update.chf, then save
      the TTY log as a .txt.
        Expect 0 errors / 0 warnings: 1 delete and 2 adds, all Success.
        If the delete warns, stop. Otherwise the old 7.86 mi line stays in
        parallel with the new path.
-  5. Check the diagram reads:
+  6. Check the diagram reads:
        REED TP1 --- 7.01 mi --- AF2-424_POI --- 0.85 mi --- REEDNO
-  6. Tidy the one-line around Reed / Reed TP1 / AF2-424_POI per the
+  7. Tidy the one-line around Reed / Reed TP1 / AF2-424_POI per the
      procedure (hide unrelated buses, don't delete them). Save as
      AF2-424_Necessary_Without.OLR.
-  7. Network > Set Generator Reference Angle.
-  8. Check Short Circuit Ratings with Area = 229, OSF = PPL_2027.OSF and CSV
+  8. Network > Set Generator Reference Angle.
+  9. Check Short Circuit Ratings with Area = 229, OSF = PPL_2027.OSF and CSV
      output on. Save as AF2-424_Necessary_Without.CSV.
 
 
@@ -114,7 +136,7 @@ STEP 2 - WITH CASE
   1. Copy the new AF2-424_Necessary_Without.OLR to AF2-424_Necessary_With.OLR.
   2. File > Case Builder: apply AF2-424_Necessary.chf, then save the TTY log.
        Expect 0 errors / 0 warnings. "Cannot make this change" means part of
-       the old AF2-425 plant is still in the case. Go back to Step 1.2.
+       the old AF2-425 plant is still in the case. Go back to Step 1.3.
   3. Expand and organize the new buses:
        AF2-424_POI --- lead line (0.02 mi) --- AF2-425_mn --- MPT ---
        AF2-425_inxc --- col eqv --- AF2-425_inx --- GSU --- AF2-425_inv
