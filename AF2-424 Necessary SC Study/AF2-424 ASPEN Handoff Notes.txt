@@ -38,11 +38,22 @@ WHAT IS IN PJM'S BASE CASE TODAY
   Reed - Reed Tap #1 line:  REED TP1 (212217) - REEDNO (209524), ckt 1,
                             'NEW_Sunbury-', 7.86 mi (= 0.85 + 7.01), no
                             mutual coupling.
-  AF2-424_POI:              connected straight to REED TP1 (the mistake).
-  Old AF2-425 plant:        AF2-425_POI, AF2-425_mn (961341), AF2-425_inxc,
+  AF2-424_POI:              tied straight to REED TP1 by a zero-impedance
+                            line named 'ZBR' (ckt 1, X = 0.00001). This is
+                            the mistake.
+  AF2-425_POI:              a tap on a DIFFERENT line, NEW_Sunbury- ckt 2
+                            between FAIR TP2 (212186) and REED TP2 (212218):
+                              FAIR TP2 - 0.95 mi - AF2-425_POI - 0.114 mi
+                              - AF2-444_POI - 0.035 mi - REED TP2
+                            AF2-444_POI is another queue's POI on the same
+                            line. KEEP the AF2-425_POI bus. Deleting it
+                            deletes the line segments on both sides of it
+                            and opens ckt 2.
+  Old AF2-425 plant:        hangs off AF2-425_POI through a 0.01 mi lead
+                            line: AF2-425_mn (961341), AF2-425_inxc,
                             AF2-425_ter (3-winding MPT), AF2-425_inx and
                             AF2-425_inv (0.645 kV), plus their transformers,
-                            generator and lines.
+                            generator and the col eqv line.
   Switch 2042:              REED (212377) - REEDNO, OPEN. Left as PJM has
                             it. The POI is fed only from REED TP1, and the
                             0.85 mi segment dead-ends at REEDNO.
@@ -63,20 +74,26 @@ STEP 1 - WITHOUT CASE
 ---------------------
   1. Open PJM's original AF2-424_Necessary_Without.OLR. Keep a copy of the
      original in case you need to start over.
-  2. Delete the whole old AF2-425 plant with "Delete all inside region"
-     (answer No to hidden buses and No to annotations):
-       AF2-425_POI, AF2-425_mn (961341), AF2-425_inxc, AF2-425_ter,
-       AF2-425_inx and AF2-425_inv, plus their transformers, generator
-       and lines.
-     Then search the buses for "AF2-425". Nothing should come up.
+  2. Delete the old AF2-425 plant from AF2-425_mn back, with "Delete all
+     inside region" (answer No to hidden buses and No to annotations):
+       AF2-425_mn (961341), AF2-425_inxc, AF2-425_ter, AF2-425_inx and
+       AF2-425_inv, plus their transformers, generator, the col eqv line
+       and the lead line to AF2-425_POI.
+     KEEP AF2-425_POI outside the region. It's a tap on the FAIR TP2 -
+     REED TP2 ckt 2 line, so deleting it would open that line.
+     Then search the buses for "AF2-425". Only AF2-425_POI should come
+     up, still connected to FAIR TP2 (0.95 mi) and AF2-444_POI (0.114 mi).
      *** This step is required. The new change file adds AF2-425_mn
      (69 kV), _inx and _inxc (34.5 kV), the same names and voltages as
      PJM's old buses, so a leftover gives "Cannot make this change". The
      old AF2-425_inv is 0.645 kV (the new one is 0.63 kV), so a leftover
      there won't error. It would quietly leave a second plant in the
-     case, so make sure the search really comes up empty. ***
-  3. Delete whatever connects AF2-424_POI to REED TP1. Keep the
-     AF2-424_POI bus itself. It should now have nothing attached.
+     case, so make sure AF2-425_POI is the only hit. ***
+  3. Delete the 'ZBR' line (ckt 1) between REED TP1 and AF2-424_POI.
+     Keep the AF2-424_POI bus itself. It should now have nothing
+     attached. Don't skip this: the POI update adds a ckt 1 line on that
+     same REED TP1 - AF2-424_POI pair, so that add fails if the ZBR is
+     still there.
   4. File > Case Builder: apply AF2-424_Necessary_POI-Update.chf, then save
      the TTY log as a .txt.
        Expect 0 errors / 0 warnings: 1 delete and 2 adds, all Success.

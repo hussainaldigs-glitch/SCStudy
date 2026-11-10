@@ -36,10 +36,14 @@ similar situations as open assumptions.
      between the two queues, model the plant as one aggregated unit
      (Anteneh's call on AF2-424/AF2-425).
    - If the base case already has an older model of the facility (e.g.
-     PJM's old AF2-425 plant in the AF2-424 case), delete all of it from
-     the Without case before applying the change file. Otherwise its
-     buses collide with the new ones ("Cannot make this change") and it
-     skews the Without results.
+     PJM's old AF2-425 plant in the AF2-424 case), delete it from the
+     Without case before applying the change file. Otherwise its buses
+     collide with the new ones ("Cannot make this change") and it skews
+     the Without results. Check what the old POI bus connects to first.
+     If it's a tap on an existing line, keep that bus and delete only from
+     the lead line back, because deleting the bus deletes the line
+     segments on both sides of it. (AF2-425_POI sat on the FAIR TP2 -
+     REED TP2 ckt 2 line, next to AF2-444_POI.)
    - No separate short circuit study package is needed for the sibling
      queue number.
 
